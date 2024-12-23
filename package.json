@@ -1,0 +1,21 @@
+{
+  "name": "go-sevice-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "start":"go run main.go",
+    "dev": "./go-sevice-template ",
+    "test": "APP_ENV=test ./go-sevice-template",
+    "build": "go build -ldflags '-w'"
+  },
+  "devDependencies": {
+    "shipit-cli": "^4.0.2",
+    "shipit-deploy": "^4.1.4"
+  },
+  "dependencies": {
+  
+  }
+}

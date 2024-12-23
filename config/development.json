@@ -1,0 +1,17 @@
+{
+    "port": ":9908",
+    "service_name": "go-service-template",
+    "access_log_path": "/data/tmp/go-service-template-access.log",
+    "log_level": "debug",
+    "env":"development",
+
+    "pgsql": {
+        "host": "127.0.0.1",
+        "port": "5432",
+        "user": "xmtj-gy",
+        "password": "123456",
+        "dbname": "postgres"
+    }
+    
+    
+}
