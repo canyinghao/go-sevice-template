@@ -10,6 +10,7 @@ import (
 	"time"
 
 	static "github.com/canyinghao/gin-static"
+	"github.com/canyinghao/go-sevice-template/cron"
 	"github.com/canyinghao/go-sevice-template/middleware"
 	"github.com/canyinghao/go-sevice-template/pkg"
 	"github.com/canyinghao/go-sevice-template/routers"
@@ -29,6 +30,7 @@ import (
 var APPENV = "development"
 var PORT = ":8080"
 var RPC_PORT = ""
+var isCron = false
 
 var (
 	g errgroup.Group
@@ -55,6 +57,8 @@ func init() {
 	PORT = config.Port
 	// rpc的端口，如果为空，将不会启动rpc
 	RPC_PORT = config.Rpc
+
+	isCron = config.Cron
 	// 日志初始化
 	middleware.InitLog(&config)
 	// 初始化数据库
@@ -94,6 +98,13 @@ func main() {
 
 	// 配置路由
 	routers.InitRouters(r)
+
+	// 配置是否开启cron
+	if isCron {
+		cronManager := cron.NewCronJobManager()
+		cronManager.Start()
+		defer cronManager.Stop()
+	}
 
 	go func() {
 		time.Sleep(time.Second)

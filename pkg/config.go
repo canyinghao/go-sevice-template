@@ -4,6 +4,7 @@ type Config struct {
 	Port          string `json:"port"`
 	AccessLogPath string `json:"access_log_path"`
 	Rpc           string `json:"rpc"`
+	Cron          bool   `json:"cron"`
 	LogLevel      string `json:"log_level"`
 	Env           string `json:"env"`
 	Pgsql         PgSQL  `json:"pgsql"`

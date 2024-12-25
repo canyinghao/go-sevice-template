@@ -1,11 +1,11 @@
 {
     "port": ":9908",
     "service_name": "go-service-template",
-    "rpc":":9909",
+    "rpc": ":9909",
+    "cron": true,
     "access_log_path": "/data/tmp/go-service-template-access.log",
     "log_level": "debug",
-    "env":"development",
-
+    "env": "development",
     "pgsql": {
         "host": "127.0.0.1",
         "port": "5432",
@@ -13,6 +13,4 @@
         "password": "123456",
         "dbname": "postgres"
     }
-    
-    
 }
