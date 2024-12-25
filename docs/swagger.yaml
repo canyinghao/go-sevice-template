@@ -1,0 +1,111 @@
+definitions:
+  controllers.UserInfo:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 6
+        minLength: 3
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.Task:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      priority:
+        type: string
+    type: object
+  pkg.ResponseResult:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: 测试接口是否正常
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: status为0表示成功，其它失败
+          schema:
+            allOf:
+            - $ref: '#/definitions/pkg.ResponseResult'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: 测试
+      tags:
+      - 测试
+  /postTask:
+    post:
+      consumes:
+      - application/json
+      description: 提交数据
+      parameters:
+      - description: 用户名
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UserInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: status为0表示成功，其它失败
+          schema:
+            allOf:
+            - $ref: '#/definitions/pkg.ResponseResult'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: 提交数据
+      tags:
+      - Task
+  /task:
+    get:
+      consumes:
+      - application/json
+      description: 查询一条数据
+      parameters:
+      - description: Account ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: status为0表示成功，其它失败
+          schema:
+            allOf:
+            - $ref: '#/definitions/pkg.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Task'
+              type: object
+      summary: 查询一条数据
+      tags:
+      - Task
+swagger: "2.0"

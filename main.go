@@ -3,7 +3,9 @@ package main
 import (
 	"embed"
 	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -11,14 +13,26 @@ import (
 	"github.com/canyinghao/go-sevice-template/middleware"
 	"github.com/canyinghao/go-sevice-template/pkg"
 	"github.com/canyinghao/go-sevice-template/routers"
+	"github.com/canyinghao/go-sevice-template/rpc"
 	"github.com/canyinghao/go-sevice-template/services"
 	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/gin-gonic/gin"
+
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	"github.com/canyinghao/go-sevice-template/docs"
 )
 
 var APPENV = "development"
 var PORT = ":8080"
+var RPC_PORT = ""
+
+var (
+	g errgroup.Group
+)
 
 func init() {
 
@@ -39,6 +53,8 @@ func init() {
 	json.Unmarshal(buf, &config)
 
 	PORT = config.Port
+	// rpc的端口，如果为空，将不会启动rpc
+	RPC_PORT = config.Rpc
 	// 日志初始化
 	middleware.InitLog(&config)
 	// 初始化数据库
@@ -59,6 +75,17 @@ func main() {
 
 	r := gin.Default()
 
+	if APPENV != "production" {
+		// api文档
+		docs.SwaggerInfo.Title = "Swagger Example API"
+		docs.SwaggerInfo.Description = "This is a sample server Petstore server."
+		docs.SwaggerInfo.Version = "1.0"
+		docs.SwaggerInfo.Host = "localhost" + PORT
+		docs.SwaggerInfo.BasePath = "/"
+		docs.SwaggerInfo.Schemes = []string{"http", "https"}
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	}
+
 	// 日志中间件
 	r.Use(middleware.GinLogger(zap.L()), middleware.GinRecovery(zap.L(), true))
 
@@ -70,10 +97,36 @@ func main() {
 
 	go func() {
 		time.Sleep(time.Second)
-		log.Println("访问地址：http://localhost" + PORT)
+		fmt.Println("访问地址：http://localhost" + PORT)
 	}()
 
-	if err := r.Run(PORT); err != nil {
-		log.Fatal(err)
+	s := &http.Server{
+		Addr:           PORT,
+		Handler:        r,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
 	}
+
+	if len(RPC_PORT) > 0 {
+		rpc.Register()
+
+		g.Go(func() error {
+			return s.ListenAndServe()
+		})
+
+		g.Go(func() error {
+			return http.ListenAndServe(":9909", nil)
+		})
+
+		if err := g.Wait(); err != nil {
+			log.Fatal(err)
+		}
+
+	} else {
+		if err := s.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
+	}
+
 }

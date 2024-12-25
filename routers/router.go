@@ -23,4 +23,7 @@ func InitRouters(r *gin.Engine) {
 
 	r.Any("/postTask", core.Handler(controllers.PostTask))
 
+	// rpc测试路由
+	r.GET("/doRpc", core.Handler(controllers.DoRpc))
+
 }

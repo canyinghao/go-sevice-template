@@ -3,6 +3,7 @@ package pkg
 type Config struct {
 	Port          string `json:"port"`
 	AccessLogPath string `json:"access_log_path"`
+	Rpc           string `json:"rpc"`
 	LogLevel      string `json:"log_level"`
 	Env           string `json:"env"`
 	Pgsql         PgSQL  `json:"pgsql"`

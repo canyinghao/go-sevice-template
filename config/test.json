@@ -1,6 +1,7 @@
 {
     "port": ":9908",
     "service_name": "go-service-template",
+    "rpc":":9909",
     "access_log_path": "/data/tmp/go-service-template-access.log",
     "log_level": "debug",
     "env":"test",
