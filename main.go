@@ -127,7 +127,7 @@ func main() {
 		})
 
 		g.Go(func() error {
-			return http.ListenAndServe(":9909", nil)
+			return http.ListenAndServe(RPC_PORT, nil)
 		})
 
 		if err := g.Wait(); err != nil {

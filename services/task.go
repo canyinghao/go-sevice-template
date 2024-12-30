@@ -1,8 +1,6 @@
 package services
 
 import (
-	"errors"
-
 	"github.com/canyinghao/go-sevice-template/model"
 	"go.uber.org/zap"
 )
@@ -16,7 +14,8 @@ func GetTaskOne(ids string) (*model.Task, error) {
 	var priority string
 	err := row.Scan(&id, &name, &description, &priority)
 	if err != nil {
-		return nil, errors.New("没有数据")
+		zap.L().Error("查询数据失败", zap.Error(err))
+		return nil, err
 	}
 	task := model.Task{Id: id, Name: name, Description: description, Priority: priority}
 

@@ -8,9 +8,17 @@
     "env": "test",
     "pgsql": {
         "host": "127.0.0.1",
-        "port": "5432",
+        "port": 5432,
         "user": "xmtj-gy",
         "password": "123456",
         "dbname": "postgres"
+    },
+    "redis": {
+        "default": {
+            "host": "127.0.0.1",
+            "port": 6379,
+            "db": 6,
+            "password": "123456"
+        }
     }
 }
