@@ -45,20 +45,22 @@ func addCron(m *CronJobManager) {
 	// })
 	// 支持超时的配置
 	m.cron.AddFunc("*/5 * * * * *", func() {
-		start := time.Now().Unix()
+
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		go func() {
+			time.Sleep(1 * time.Second)
+			cancel()
+		}()
 		defer cancel()
-		time.Sleep(1 * time.Second)
-		mid := time.Now().Unix()
-		fmt.Println("mid:", mid-start)
 		select {
 		case <-ctx.Done():
-			fmt.Println("Task timed out")
-		default:
-			fmt.Println("Task is finish")
+			err := ctx.Err()
+			if err == context.DeadlineExceeded {
+				fmt.Println("Task timed out")
+			} else {
+				fmt.Println("Task finish")
+			}
 		}
-		fmt.Println("end:", time.Now().Unix()-mid)
-
 	})
 
 }
